@@ -1,0 +1,17 @@
+{
+  "name": "task1",
+  "version": "1.0.0",
+  "description": "cmd current date",
+  "main": "date.js",
+  "bin": {
+    "current": "date.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tatiana-lee",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.5.1"
+  }
+}
