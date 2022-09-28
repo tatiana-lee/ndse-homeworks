@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 
 const today = new Date();
 
