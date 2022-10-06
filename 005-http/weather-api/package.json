@@ -1,0 +1,21 @@
+{
+  "name": "weather-api",
+  "version": "1.0.0",
+  "description": "get current weather",
+  "main": "weather.js",
+  "bin": {
+    "weather": "weather.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node -r dotenv/config config.js"
+  },
+  "author": "tatiana-lee",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.6.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
