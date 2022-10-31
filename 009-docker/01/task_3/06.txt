@@ -1,0 +1,5 @@
+6. Подключитесь к контейнеру second_node с помощью exec и получите список файлов в директории /var/second/data, выведете на экран содержимое файлов
+
+docker exec -it second_node /bin/sh
+# ls var/second/data
+another_test.txt  test.txt

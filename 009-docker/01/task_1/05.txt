@@ -1,0 +1,4 @@
+5. Запустите второй раз контейнера с именем pinger
+
+docker start pinger
+pinger

@@ -1,0 +1,9 @@
+1. Загрузите образ busybox последней версии
+
+docker pull busybox
+Using default tag: latest
+latest: Pulling from library/busybox
+22b70bddd3ac: Pull complete
+Digest: sha256:6bdd92bf5240be1b5f3bf71324f5e371fe59f0e153b27fa1f1620f78ba16963c
+Status: Downloaded newer image for busybox:latest
+docker.io/library/busybox:latest

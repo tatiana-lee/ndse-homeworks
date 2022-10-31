@@ -1,0 +1,5 @@
+6. Выведите на список всех контейнеров - запущенных и остановленных
+
+docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS                          PORTS     NAMES
+2d430081a28f   busybox   "ping -c 7 netology.…"   5 minutes ago   Exited (0) About a minute ago             pinger

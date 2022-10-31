@@ -1,0 +1,4 @@
+3. Запустите контейнер с именем second_node из образа node версии 15.14 в фоновом режиме, подключив папку data из текущей директории в /var/second/data контейнера
+
+docker run -it --name second_node -d -v %cd%/data:/var/second/data node:15.14 ping netology.ru 
+5e431cd17649b7c4c529862030a26d07af040c969533af142ff78ca0c4534e8b

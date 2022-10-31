@@ -1,0 +1,5 @@
+2. Запустите контейнер node в интерактивном режиме подключения терминала, поименуйте его mynode, передайте две переменные среды NAME=<ваше имя> и SURNAME=<ваша фамилия>
+
+docker run -i -t --name mynode -e NAME=Tatiana -e SURNAME=Lee node:15.14 
+Welcome to Node.js v15.14.0.
+Type ".help" for more information.

@@ -1,0 +1,5 @@
+8. Удалите оба контейнера
+
+docker rm first_node second_node
+first_node
+second_node

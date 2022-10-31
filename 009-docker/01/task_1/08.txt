@@ -1,0 +1,29 @@
+8. Определите по логам общее количество запусков команды ping и какое общее количество отправленых запросов
+
+2 запуска, 14 запросов
+
+docker logs -t -f pinger
+2022-10-30T09:35:29.120473889Z PING netology.ru (188.114.98.224): 56 data bytes
+2022-10-30T09:35:29.163198890Z 64 bytes from 188.114.98.224: seq=0 ttl=37 time=42.460 ms      
+2022-10-30T09:35:30.133832459Z 64 bytes from 188.114.98.224: seq=1 ttl=37 time=12.642 ms      
+2022-10-30T09:35:31.133527348Z 64 bytes from 188.114.98.224: seq=2 ttl=37 time=11.918 ms      
+2022-10-30T09:35:32.133675238Z 64 bytes from 188.114.98.224: seq=3 ttl=37 time=11.700 ms      
+2022-10-30T09:35:33.134288880Z 64 bytes from 188.114.98.224: seq=4 ttl=37 time=11.814 ms      
+2022-10-30T09:35:34.144988388Z 64 bytes from 188.114.98.224: seq=5 ttl=37 time=22.189 ms      
+2022-10-30T09:35:35.135543410Z 64 bytes from 188.114.98.224: seq=6 ttl=37 time=12.469 ms      
+2022-10-30T09:35:35.135584537Z
+2022-10-30T09:35:35.135589746Z --- netology.ru ping statistics ---
+2022-10-30T09:35:35.135593864Z 7 packets transmitted, 7 packets received, 0% packet loss      
+2022-10-30T09:35:35.135598122Z round-trip min/avg/max = 11.700/17.884/42.460 ms
+2022-10-30T09:39:47.615144709Z PING netology.ru (188.114.98.224): 56 data bytes
+2022-10-30T09:39:47.627599849Z 64 bytes from 188.114.98.224: seq=0 ttl=37 time=12.537 ms      
+2022-10-30T09:39:48.629608930Z 64 bytes from 188.114.98.224: seq=1 ttl=37 time=14.268 ms      
+2022-10-30T09:39:49.627557423Z 64 bytes from 188.114.98.224: seq=2 ttl=37 time=11.872 ms      
+2022-10-30T09:39:50.627841295Z 64 bytes from 188.114.98.224: seq=3 ttl=37 time=11.972 ms      
+2022-10-30T09:39:51.627569460Z 64 bytes from 188.114.98.224: seq=4 ttl=37 time=11.453 ms      
+2022-10-30T09:39:52.628541641Z 64 bytes from 188.114.98.224: seq=5 ttl=37 time=11.975 ms      
+2022-10-30T09:39:53.628285588Z 64 bytes from 188.114.98.224: seq=6 ttl=37 time=11.282 ms      
+2022-10-30T09:39:53.628504097Z
+2022-10-30T09:39:53.628527581Z --- netology.ru ping statistics ---
+2022-10-30T09:39:53.628535667Z 7 packets transmitted, 7 packets received, 0% packet loss      
+2022-10-30T09:39:53.628541187Z round-trip min/avg/max = 11.282/12.194/14.268 ms

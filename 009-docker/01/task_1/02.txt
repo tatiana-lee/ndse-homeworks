@@ -1,0 +1,15 @@
+2. Запустите новый контейнер busybox с командой ping сайта netology.ru, и количеством пингов 7, поименуйте контейнер pinger
+
+docker run -it --name pinger busybox ping -c 7 netology.ru
+PING netology.ru (188.114.98.224): 56 data bytes
+64 bytes from 188.114.98.224: seq=0 ttl=37 time=42.460 ms
+64 bytes from 188.114.98.224: seq=1 ttl=37 time=12.642 ms
+64 bytes from 188.114.98.224: seq=2 ttl=37 time=11.918 ms
+64 bytes from 188.114.98.224: seq=3 ttl=37 time=11.700 ms
+64 bytes from 188.114.98.224: seq=4 ttl=37 time=11.814 ms
+64 bytes from 188.114.98.224: seq=5 ttl=37 time=22.189 ms
+64 bytes from 188.114.98.224: seq=6 ttl=37 time=12.469 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 11.700/17.884/42.460 ms

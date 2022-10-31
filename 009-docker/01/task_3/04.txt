@@ -1,0 +1,5 @@
+4. Подключитесь к контейнеру first_node с помощью exec и создайте текстовый файл любого содержания в /var/first/data
+
+docker exec -d first_node touch /var/first/data/test.txt 
+docker exec -it first_node /bin/sh  
+echo 'hello first node' > var/first/data/test.txt

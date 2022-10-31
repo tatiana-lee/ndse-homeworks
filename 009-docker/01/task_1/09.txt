@@ -1,0 +1,7 @@
+9. Удалите контейнер с именем pinger
+
+docker rm pinger
+pinger
+
+docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
