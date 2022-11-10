@@ -1,0 +1,18 @@
+services:
+  storage:
+    image: redis:latest
+    volumes:
+      - ./data:/data
+  counter:
+    image: node:latest
+    volumes: 
+      - ./:/app
+    ports:
+      - 80:3002
+    environment:
+      - PORT=3002
+      - REDIS_URL=redis://storage
+    working_dir: /app
+    depends_on:
+      - storage
+    command: ["npm", "run", "dev"]

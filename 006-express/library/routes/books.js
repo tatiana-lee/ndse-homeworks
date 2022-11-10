@@ -1,7 +1,11 @@
 const express = require('express');
+const http = require('http');
 const router = express.Router();
 const { Book } = require('../models/Book');
-const accepts = require('accepts');
+
+const counter = express();
+
+const COUNTER_URL = process.env.COUNTER_URL;
 
 const fileMiddleware = require('../middleware/fileBook');
 
@@ -42,10 +46,29 @@ router.get('/:id', (req, res) => {
     res.redirect('/404');
   }
 
-  res.render('book/view', {
-    title: 'Books | view',
-    books: books[i],
-  });
+  const cnt = http.request(
+    `${COUNTER_URL}/counter/${id}/incr`,
+    { method: 'POST' },
+    (cb) => {
+      cb.setEncoding('utf-8');
+      let rawData = '';
+      cb.on('data', (chunk) => (rawData += chunk));
+      cb.on('end', () => {
+        const counter = JSON.parse(rawData).views
+        try {
+          
+          res.render('book/view', {
+            title: 'Books | view',
+            books: books[i],
+            cntr: counter,
+          });
+        } catch (error) {
+          console.log(error.message);
+        }
+      });
+    }
+  );
+  cnt.end();
 });
 
 router.get('/:id/download', (req, res) => {

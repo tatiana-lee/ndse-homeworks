@@ -12,6 +12,7 @@
                 <p class="card-text">Описание: <%= books.description %></p>
                 <p class="card-text">Автор: <%= books.authors %></p>
                 <p class="card-text">Файл: <%= books.fileName %></p>
+                <p class="card-text">Просмотров: <%= cntr %></p>
 
                 <div class="text-right">
                     <form action="/books/<%= books.id %>/download" method="GET" class="d-inline">
