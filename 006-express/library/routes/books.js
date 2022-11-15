@@ -1,33 +1,23 @@
 const express = require('express');
 const http = require('http');
 const router = express.Router();
-const { Book } = require('../models/Book');
-
-const counter = express();
+const Book = require('../models/Book');
+const { v4: uuid } = require('uuid');
 
 const COUNTER_URL = process.env.COUNTER_URL;
 
 const fileMiddleware = require('../middleware/fileBook');
 
-const library = {
-  books: [],
-};
-
-[1, 2, 3].map((el) => {
-  const newBook = new Book(
-    `book ${el}`,
-    `desc book ${el}`,
-    `author book ${el}`
-  );
-  library.books.push(newBook);
-});
-
-router.get('/', (req, res) => {
-  const { books } = library;
-  res.render('book/index', {
-    title: 'Books',
-    books: books,
-  });
+router.get('/', async (req, res) => {
+  try {
+    const books = await Book.find().select('-__v');
+    res.render('book/index', {
+      title: 'Books',
+      books: books,
+    });
+  } catch (error) {
+    res.redirect('/404');
+  }
 });
 
 router.get('/create', (req, res) => {
@@ -37,130 +27,121 @@ router.get('/create', (req, res) => {
   });
 });
 
-router.get('/:id', (req, res) => {
-  const { books } = library;
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const i = books.findIndex((book) => book.id === id);
 
-  if (i === -1) {
-    res.redirect('/404');
-  }
-
-  const cnt = http.request(
-    `${COUNTER_URL}/counter/${id}/incr`,
-    { method: 'POST' },
-    (cb) => {
-      cb.setEncoding('utf-8');
-      let rawData = '';
-      cb.on('data', (chunk) => (rawData += chunk));
-      cb.on('end', () => {
-        const counter = JSON.parse(rawData).views
-        try {
-          
-          res.render('book/view', {
-            title: 'Books | view',
-            books: books[i],
-            cntr: counter,
-          });
-        } catch (error) {
-          console.log(error.message);
-        }
-      });
-    }
-  );
-  cnt.end();
-});
-
-router.get('/:id/download', (req, res) => {
-  const { books } = library;
-  const { id } = req.params;
-  const i = books.findIndex((book) => book.id === id);
-
-  if (i !== -1) {
-    res.download(
-      __dirname + '/../public/books/' + books[i].fileBook,
-      books[i].fileName
+  try {
+    const books = await Book.findById(id).select('-__v');
+    const cnt = http.request(
+      `${COUNTER_URL}/counter/${id}/incr`,
+      { method: 'POST' },
+      (cb) => {
+        cb.setEncoding('utf-8');
+        let rawData = '';
+        cb.on('data', (chunk) => (rawData += chunk));
+        cb.on('end', () => {
+          const counter = JSON.parse(rawData).views;
+          try {
+            res.render('book/view', {
+              title: 'Books | view',
+              books: books,
+              cntr: counter,
+            });
+          } catch (error) {
+            console.log(error.message);
+          }
+        });
+      }
     );
-  } else {
-    res.status(404);
-    res.json({ errcode: 404, errmsg: 'Not found' });
+    cnt.end();
+  } catch (error) {
+    res.redirect('/404');
   }
 });
 
-router.get('/update/:id', (req, res) => {
-  const { books } = library;
+router.get('/:id/download', async (req, res) => {
   const { id } = req.params;
-  const i = books.findIndex((book) => book.id === id);
 
-  if (i === -1) {
+  try {
+    const book = await Book.findById(id).select('-__v');
+    res.download(
+      __dirname + '/../public/books/' + book.fileBook,
+      book.fileName
+    );
+  } catch (error) {
     res.redirect('/404');
   }
+});
 
-  res.render('book/update', {
-    title: 'Books | view',
-    books: books[i],
+router.get('/update/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const book = await Book.findById(id).select('-__v');
+    res.render('book/update', {
+      title: 'Books | view',
+      books: book,
+    });
+  } catch (error) {
+    res.redirect('/404');
+  }
+});
+
+router.post('/create', fileMiddleware.single('fileBook'), async (req, res) => {
+  const id = uuid();
+  const { title, description, authors, favorite, fileCover, fileName, fileBook } =
+    req.body;
+
+  const newBook = new Book({
+    id,
+    title,
+    description,
+    authors,
+    favorite,
+    fileCover,
+    fileName,
+    fileBook,
   });
-});
 
-router.post('/create', fileMiddleware.single('fileBook'), (req, res) => {
-  const { books } = library;
-  const {
-    title,
-    description,
-    authors,
-    favorite,
-    fileCover,
-    fileName,
-    fileBook,
-  } = req.body;
-
-  const newBook = new Book(
-    title,
-    description,
-    authors,
-    favorite,
-    fileCover,
-    req.file.originalname || fileName,
-    req.file.filename || fileBook
-  );
-  books.push(newBook);
-
-  res.redirect('/books');
-});
-
-router.post('/update/:id', fileMiddleware.single('fileBook'), (req, res) => {
-  const { books } = library;
-  const { id } = req.params;
-  const { title, description, authors, fileName, fileBook } = req.body;
-  const i = books.findIndex((book) => book.id === id);
-
-  if (i === -1) {
+  try {
+    await newBook.save();
+    res.redirect('/books');
+  } catch (error) {
     res.redirect('/404');
   }
-
-  books[i] = {
-    ...books[i],
-    title,
-    description,
-    authors,
-    fileName,
-    fileBook,
-  };
-
-  res.redirect(`/books/${id}`);
 });
 
-router.post('/delete/:id', (req, res) => {
-  const { books } = library;
+router.post('/update/:id', fileMiddleware.single('fileBook'), async (req, res) => {
   const { id } = req.params;
-  const i = books.findIndex((book) => book.id === id);
+  const { title, description, authors, favorite, fileCover, fileName, fileBook } =
+    req.body;
 
-  if (i === -1) {
+  try {
+    await Book.findByIdAndUpdate(id, {
+      title,
+      description,
+      authors,
+      favorite,
+      fileCover,
+      fileName,
+      fileBook,
+    });
+    res.redirect(`/books/${id}`);
+  } catch (error) {
     res.redirect('/404');
   }
+});
 
-  books.splice(i, 1);
-  res.redirect('/books');
+router.post('/delete/:id',  async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await Book.deleteOne({ _id: id });
+    res.redirect('/books');
+  } catch (error) {
+    res.status(500).json(error);
+    res.redirect('/404');
+  }
 });
 
 module.exports = router;

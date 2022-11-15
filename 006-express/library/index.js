@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
 const errorMiddleware = require('./middleware/error');
 const indexRouter = require('./routes/index');
 const booksRouter = require('./routes/books');
+const apiRouter = require('./routes/api/index');
 
 const app = express();
 
@@ -15,9 +17,22 @@ app.use(express.static(path.join(__dirname + 'views')));
 
 app.use('/', indexRouter);
 app.use('/books', booksRouter);
+app.use('/api/books', apiRouter);
 
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
+const MongoURL = process.env.MONGODB_URL;
 
-app.listen(PORT);
+async function start(PORT, MongoURL) {
+  try {
+    await mongoose.connect(MongoURL, {dbName: 'library'});
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`)
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+start(PORT, MongoURL);

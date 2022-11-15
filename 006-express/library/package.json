@@ -6,13 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon -L index.js"
   },
   "author": "tatiana-lee",
   "license": "MIT",
   "dependencies": {
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "mongoose": "^6.7.2",
     "multer": "^1.4.5-lts.1",
     "redis": "^4.4.0",
     "uuid": "^9.0.0"

@@ -1,10 +1,12 @@
 services:
+
   storage:
     image: redis
     volumes:
       - ./counter/data:/data
+
   counter:
-    image: node:latest
+    build: ./counter
     volumes:
       - ./counter:/counter
     ports:
@@ -16,8 +18,29 @@ services:
     depends_on:
       - storage
     command: ["npm", "run", "dev"]
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: library
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
   library:
-    image: node:latest
+    build: .
     volumes:
       - ./:/app
     ports:
@@ -25,7 +48,9 @@ services:
     environment:
       - PORT=3000
       - COUNTER_URL=http://counter:3001
+      - MONGODB_URL=mongodb://root:example@mongo:27017/
     working_dir: /app
     depends_on:
       - counter
+      - mongo
     command: ["npm", "run", "dev"]

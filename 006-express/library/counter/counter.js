@@ -24,6 +24,4 @@ counter.post('/counter/:id/incr', async (req, res) => {
   res.json({ views: cnt });
 });
 
-counter.listen(PORT, () => {
-  console.log(`server listen ${PORT}`);
-});
+counter.listen(PORT);
