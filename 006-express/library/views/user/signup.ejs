@@ -1,0 +1,24 @@
+<%- include('../port/layout-start', {title: title}) %>
+<%- include('../port/menu') %>
+
+<h1><%= title %></h1>
+
+<form action="/signup" method="post" class="mt-5">
+  <div class="form-group">
+    <label>Логин:</label>
+    <input type="text" name="username" class="form-control"/>
+  </div>
+  <div class="form-group">
+    <label>Пароль:</label>
+    <input type="password" name="password" class="form-control"/>
+  </div>
+  <div class="form-group">
+    <label>Email:</label>
+    <input type="email" name="email" class="form-control"/>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+  </div>
+</form>
+
+<%- include('../port/layout-end') %>
