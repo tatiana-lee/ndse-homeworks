@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const router = express.Router();
 const Book = require('../models/Book');
+const container = require('../../container/container')
 const { v4: uuid } = require('uuid');
 
 const COUNTER_URL = process.env.COUNTER_URL;
@@ -10,7 +11,9 @@ const fileMiddleware = require('../middleware/fileBook');
 
 router.get('/', async (req, res) => {
   try {
-    const books = await Book.find().select('-__v');
+    // const books = await Book.find().select('-__v');
+    const repo = container.get(BooksRepository);
+    const books = await repo.getBooks();
     res.render('book/index', {
       title: 'Books',
       books: books,
@@ -31,7 +34,10 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const books = await Book.findById(id).select('-__v');
+    // const books = await Book.findById(id).select('-__v');
+    const repo = container.get(BooksRepository);
+    const books = await repo.getBook(id);
+
     const cnt = http.request(
       `${COUNTER_URL}/counter/${id}/incr`,
       { method: 'POST' },
