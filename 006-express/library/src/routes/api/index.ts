@@ -1,14 +1,12 @@
-const express = require('express');
+import express from 'express';
+import { container } from '../../container/container';
+import { fileMiddleware } from '../../middleware/fileBook';
+import { BooksRepository } from '../../models/BooksRepository';
+
 const router = express.Router();
-const Book = require('../../models/Book');
-const container = require('../../container/container')
-const { v4: uuid } = require('uuid');
 
-const fileMiddleware = require('../../middleware/fileBook');
-
-router.get('/', async (req, res) => {
+router.get('/', async (req: any, res: any) => {
   try {
-    // const books = await Book.find().select('-__v');
     const repo = container.get(BooksRepository);
     const books = await repo.getBooks();
     res.json(books);
@@ -17,46 +15,41 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: any, res: any) => {
   const { id } = req.params;
   const repo = container.get(BooksRepository);
 
   try {
-    // const books = await Book.findById(id).select('-__v');
-    const books = await repo.getBook(id)
+    const books = await repo.getBook(id);
     res.json(books);
   } catch (error) {
     res.status(404).json({ msg: error });
   }
 });
 
-router.post('/', fileMiddleware.single('fileBook'), async (req, res) => {
-  const id = uuid();
+router.post('/', fileMiddleware.single('fileBook'), async (req: any, res: any) => {
   const { title, description, authors, favorite, fileCover, fileName } =
     req.body;
 
-  const newBook = new Book({
-    id,
+  const newBook = {
     title,
     description,
     authors,
     favorite,
     fileCover,
-    fileName,
-    fileBook,
-  });
+    fileName
+  };
 
   try {
-    // await newBook.save();
     const repo = container.get(BooksRepository);
-    const book = await repo.createBook(newBook)
+    const book = await repo.createBook(newBook);
     res.json(book);
   } catch (error) {
     res.status(404).json({ msg: error });
   }
 });
 
-router.put('/:id', fileMiddleware.single('fileBook'), async (req, res) => {
+router.put('/:id', fileMiddleware.single('fileBook'), async (req: any, res: any) => {
   const { id } = req.params;
   const {
     title,
@@ -67,36 +60,34 @@ router.put('/:id', fileMiddleware.single('fileBook'), async (req, res) => {
     fileName,
     fileBook,
   } = req.body;
-
+   const data = {
+    title,
+    description,
+    authors,
+    favorite,
+    fileCover,
+    fileName,
+    fileBook,
+  }
   try {
-    // await Book.findByIdAndUpdate(id, {
-    //   title,
-    //   description,
-    //   authors,
-    //   favorite,
-    //   fileCover,
-    //   fileName,
-    //   fileBook,
-    // });
     const repo = container.get(BooksRepository);
-    repo.updateBook(id)
+    repo.updateBook(id, data);
     res.redirect(`/books/${id}`);
   } catch (error) {
     res.status(500).json({ msg: error });
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: any, res: any) => {
   const { id } = req.params;
 
   try {
-    // await Book.deleteOne({ _id: id });
     const repo = container.get(BooksRepository);
-    repo.deleteBook(id)
+    repo.deleteBook(id);
     res.json('ok');
   } catch (error) {
     res.status(500).json({ msg: error });
   }
 });
 
-module.exports = router;
+export default router;

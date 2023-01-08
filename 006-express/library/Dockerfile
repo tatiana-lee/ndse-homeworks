@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:18.10.0
 
 WORKDIR /app
 
@@ -8,16 +8,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY middleware ./middleware
-
-COPY models ./models
-
-COPY public ./public
-
-COPY routes ./routes
+COPY dist ./dist
 
 COPY views ./views
-
-COPY index.js ./
 
 CMD ["npm", "run", "start"]

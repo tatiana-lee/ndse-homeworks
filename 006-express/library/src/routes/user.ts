@@ -1,12 +1,14 @@
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/User');
+import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import Strategy from 'passport-local';
+import { container } from '../container/container';
+import { UserModel } from '../models/User.model';
+import { UserRepository } from '../models/UserRepository';
 
-const verify = async (username, password, done) => {
+const verify = async (username: string, password: string, done: any) => {
   try {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       username: username,
       password: password,
     }).select('-__v');
@@ -22,15 +24,15 @@ const options = {
   emailField: 'email',
 };
 
-passport.use('local', new LocalStrategy(options, verify));
+passport.use('local', new Strategy.Strategy(options, verify));
 
-passport.serializeUser(function (user, cb) {
+passport.serializeUser(function (user: any, cb) {
   process.nextTick(function () {
     cb(null, { id: user.id, username: user.username, email: user.email });
   });
 });
 
-passport.deserializeUser(function (user, cb) {
+passport.deserializeUser(function (user: any, cb) {
   process.nextTick(function () {
     return cb(null, user);
   });
@@ -44,33 +46,33 @@ app.use(session({ secret: 'SECRET', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req, res) => {
+app.get('/', (req: any, res: any) => {
   res.render('index', { user: req.user });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', (req: any, res: any) => {
   res.render('user/login', { title: 'Авторизация' });
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', (req: any, res: any) => {
   res.render('user/signup', { title: 'Регистрация' });
 });
 
 app.get(
   '/me',
-  (req, res, next) => {
+  (req: any, res: any, next: any) => {
     if (!req.isAuthenticated()) {
       return res.redirect('/login');
     }
     next();
   },
-  (req, res) => {
+  (req: any, res: any) => {
     res.render('user/profile', { title: 'Ваш профиль', user: req.user });
   }
 );
 
-app.get('/logout', function (req, res, next) {
-  req.logout(function (err) {
+app.get('/logout', function (req: any, res: any, next: any) {
+  req.logout(function (err: any) {
     if (err) {
       return next(err);
     }
@@ -80,23 +82,25 @@ app.get('/logout', function (req, res, next) {
 
 app.post(
   '/login',
-  passport.authenticate('local', { session: 'SECRET' }),
-  (req, res) => {
+  passport.authenticate('local'),
+  (req: any, res: any) => {
     console.log('req.user: ', req.user);
     res.redirect('/');
   }
 );
 
-app.post('/signup', async (req, res) => {
+app.post('/signup', async (req: any, res: any) => {
   const { username, password, email } = req.body;
-  const newUser = new User({ username, password, email });
+  const data = { username, password, email };
 
   try {
-    await newUser.save();
+    const repo = container.get(UserRepository);
+    repo.createUser(data);
     res.redirect('/login');
   } catch (error) {
+    console.log(error)
     res.redirect('/404');
   }
 });
 
-module.exports = app;
+export default app;

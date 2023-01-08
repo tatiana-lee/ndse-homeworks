@@ -1,12 +1,14 @@
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const User = require('../../models/User');
+import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import Strategy from 'passport-local';
+import { container } from '../../container/container';
+import { UserModel } from '../../models/User.model';
+import { UserRepository } from '../../models/UserRepository';
 
-const verify = async (username, password, done) => {
+const verify = async (username: string, password: string, done: any) => {
   try {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       username: username,
       password: password,
     }).select('-__v');
@@ -21,15 +23,15 @@ const options = {
   passwordField: 'password',
 };
 
-passport.use('local', new LocalStrategy(options, verify));
+passport.use('local', new Strategy.Strategy(options, verify));
 
-passport.serializeUser(function (user, cb) {
+passport.serializeUser(function (user: any, cb) {
   process.nextTick(function () {
     cb(null, { id: user.id, username: user.username });
   });
 });
 
-passport.deserializeUser(function (user, cb) {
+passport.deserializeUser(function (user: any, cb) {
   process.nextTick(function () {
     return cb(null, user);
   });
@@ -43,28 +45,28 @@ app.use(session({ secret: 'SECRET', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/login', (req, res) => {
+app.get('/login', (req: any, res: any) => {
   res.json({ user: req.user });
 });
 
 app.post(
   '/login',
   passport.authenticate('local', { failureRedirect: '/login' }),
-  (req, res) => {
+  (req: any, res: any) => {
     res.json(req.user);
   }
 );
 
-app.post('/signup', async (req, res) => {
+app.post('/signup', async (req: any, res: any) => {
   const { username, password, email } = req.body;
-  const newUser = new User({ username, password, email });
-
+  const data = { username, password, email }
   try {
-    await newUser.save();
+    const repo = container.get(UserRepository)
+    const newUser = repo.createUser(data)
     res.json(newUser);
   } catch (error) {
     res.json({ errmsg: error });
   }
 });
 
-module.exports = app;
+export default app;

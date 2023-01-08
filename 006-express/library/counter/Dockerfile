@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:18.10.0
 
 WORKDIR /counter
 

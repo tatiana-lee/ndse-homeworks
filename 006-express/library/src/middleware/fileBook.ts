@@ -1,14 +1,14 @@
-const multer = require('multer');
-const { v4: uuid } = require('uuid');
+import multer from 'multer';
+import { v4 as uuid } from 'uuid';
 
 const storage = multer.diskStorage({
-  destination(req, file, cb) {
+  destination(req: any, file: any, cb: any) {
     cb(null, 'public/books');
   },
-  filename(req, file, cb) {
+  filename(req: any, file: any, cb: any) {
     file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
     cb(null, `${uuid()}-${file.originalname}`);
   },
 });
 
-module.exports = multer({ storage });
+export const fileMiddleware = multer({ storage });
