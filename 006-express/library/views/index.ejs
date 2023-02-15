@@ -1,10 +1,17 @@
-<%- include('./port/layout-start', {title: title}) %>
-<%- include('./port/menu') %>
+<%- include('./port/layout-start', {title: title}) %> <%- include('./port/menu')
+%>
 
 <div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        <h1 class="display-4"><%= title %></h1>
-    </div>
+  <div class="container">
+    <h1 class="display-4"><%= title %></h1>
+  </div>
+  <% if (!user) { %>
+  <h3>Пожалуйста, <a href="/user/login">войдите в систему</a></h3>
+  <% } else { %>
+  <h3>Привет, <%= user.name.familyName %>.</h3>
+  <a href="/user/profile">Открыть профиль</a>
+  <a href="/user/logout">Выйти из профиля</a>
+  <% } %>
 </div>
 
 <%- include('./port/layout-end') %>
